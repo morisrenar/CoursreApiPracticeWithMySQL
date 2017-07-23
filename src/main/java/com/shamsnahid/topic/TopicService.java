@@ -1,5 +1,6 @@
 package com.shamsnahid.topic;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,6 +13,9 @@ import java.util.List;
 @Service
 public class TopicService {
 
+    @Autowired
+    TopicRepository topicRepository;
+
     private List<Topic> topics = new ArrayList<>(Arrays.asList(
             new Topic("java", "Java Core", "Basic Description"),
                 new Topic("js", "Java Script Core", "Basic Java Script Description"),
@@ -19,38 +23,28 @@ public class TopicService {
         ));
 
     public List<Topic> getAllTopics() {
+        //return topics;
+        List<Topic> topics = new ArrayList<>();
+
+        for(Topic tp : topicRepository.findAll()) {
+            topics.add(tp);
+        }
         return topics;
     }
 
     public Topic getTopic(String topicId) {
-        for(Topic tp: topics) {
-            if(tp.getTopicId().equals(topicId) == true) {
-                return tp;
-            }
-        }
-        return null;    //topics not found
+        return topicRepository.findOne(topicId);
     }
 
     public void addTopic(Topic topic) {
-        topics.add(topic);
+        topicRepository.save(topic);
     }
 
     public void updateTopic(Topic topic, String topicId) {
-        for(Integer index=0; index<topics.size(); index++) {
-            if(topics.get(index).getTopicId().equals(topicId) == true) {
-                topics.set(index, topic);
-                return;
-            }
-        }
+        topicRepository.save(topic);
     }
 
     public void deleteTopic(String topicId) {
-        for(int index=0; index<topics.size(); index++) {
-            Topic tp = topics.get(index);
-            if (tp.getTopicId().equals(topicId)) {
-                topics.remove(index);
-                return;
-            }
-        }
+        topicRepository.delete(topicId);
     }
 }
